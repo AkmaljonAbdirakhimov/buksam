@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "964161782456",
+    "project_id": "buksam-flutter-practicum",
+    "storage_bucket": "buksam-flutter-practicum.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:964161782456:android:3275b3a8c6e3f6d4d76a4d",
+        "android_client_info": {
+          "package_name": "com.example.buksam_flutter_practicum"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCFYdZJu4Q8cljtRdArPHjO8FixqdO5GA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
