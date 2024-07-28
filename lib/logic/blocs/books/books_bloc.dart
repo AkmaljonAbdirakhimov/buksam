@@ -1,5 +1,6 @@
 import 'package:buksam_flutter_practicum/data/models/book.dart';
 import 'package:buksam_flutter_practicum/data/repositories/books_repository.dart';
+import 'package:buksam_flutter_practicum/data/repositories/users_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'books_event.dart';
@@ -8,8 +9,9 @@ part 'books_state.dart';
 class BooksBloc extends Bloc<BooksEvent, BooksState> {
   final BooksRepository _booksRepository;
 
-  BooksBloc({required BooksRepository booksRepository})
-      : _booksRepository = booksRepository,
+  BooksBloc({
+    required BooksRepository booksRepository,
+  })  : _booksRepository = booksRepository,
         super(InitialBookState()) {
     on<GetBooksEvent>(_getBooks);
     on<AddBookEvent>(_addBook);
@@ -20,7 +22,7 @@ class BooksBloc extends Bloc<BooksEvent, BooksState> {
   void _getBooks(GetBooksEvent event, Emitter<BooksState> emit) async {
     emit(LoadingBookState());
     try {
-      emit.forEach(
+      await emit.forEach(
         _booksRepository.getBooks(),
         onData: (List<Book> books) {
           return LoadedBookState(books);

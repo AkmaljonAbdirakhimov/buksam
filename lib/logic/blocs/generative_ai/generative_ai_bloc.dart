@@ -4,6 +4,8 @@ import 'package:buksam_flutter_practicum/core/utils/extensions.dart';
 import 'package:buksam_flutter_practicum/data/models/book.dart';
 import 'package:buksam_flutter_practicum/core/utils/ai_constants.dart';
 import 'package:buksam_flutter_practicum/core/utils/constants.dart';
+import 'package:buksam_flutter_practicum/data/repositories/auth_repository.dart';
+import 'package:buksam_flutter_practicum/data/repositories/books_repository.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
@@ -11,7 +13,13 @@ part 'events/generative_ai_events.dart';
 part 'states/generative_ai_states.dart';
 
 class GenerativeAiBloc extends Bloc<GenerativeAiEvents, GenerativeAiStates> {
-  GenerativeAiBloc() : super(InitialGenerativeAiState()) {
+  final BooksRepository booksRepository;
+  final AuthRepository authRepository;
+
+  GenerativeAiBloc({
+    required this.booksRepository,
+    required this.authRepository,
+  }) : super(InitialGenerativeAiState()) {
     on<SummarizeAiEvent>(_summarize);
   }
 
@@ -45,7 +53,12 @@ class GenerativeAiBloc extends Bloc<GenerativeAiEvents, GenerativeAiStates> {
       if (response.text == null) {
         throw ("Xulosa qila olmadim");
       } else {
-        final book = Book.fromJson(response.text!.clearJson);
+        var book = Book.fromJson(response.text!.clearJson);
+        if (authRepository.currentUser != null) {
+          book.userId = authRepository.currentUser!.uid;
+        }
+        print(book);
+        await booksRepository.addBook(book);
         emit(LoadedGenerativeAiState(book));
       }
     } catch (e) {

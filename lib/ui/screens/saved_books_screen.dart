@@ -1,4 +1,5 @@
 import 'package:buksam_flutter_practicum/logic/blocs/books/books_bloc.dart';
+import 'package:buksam_flutter_practicum/ui/screens/summary_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,6 +13,7 @@ class SavedBooksScreen extends StatelessWidget {
         title: const Text("Xulosalar Tarixi"),
       ),
       body: BlocBuilder<BooksBloc, BooksState>(
+        bloc: context.read<BooksBloc>()..add(GetBooksEvent()),
         builder: (ctx, state) {
           if (state is LoadingBookState) {
             return const Center(
@@ -35,6 +37,17 @@ class SavedBooksScreen extends StatelessWidget {
                     itemBuilder: (ctx, index) {
                       final book = state.books[index];
                       return ListTile(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (ctx) => SummaryScreen(book: book),
+                              settings: const RouteSettings(
+                                arguments: "saved",
+                              ),
+                            ),
+                          );
+                        },
                         title: Text(book.title),
                         subtitle: Text(book.author),
                       );

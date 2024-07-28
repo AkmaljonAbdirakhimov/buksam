@@ -1,88 +1,77 @@
+import 'package:buksam_flutter_practicum/data/models/book.dart';
 import 'package:buksam_flutter_practicum/logic/blocs/books/books_bloc.dart';
 import 'package:buksam_flutter_practicum/ui/widgets/book_info_dialog.dart';
 import 'package:buksam_flutter_practicum/ui/widgets/markdown_with_footer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../logic/blocs/all_blocs.dart';
-
 class SummaryScreen extends StatelessWidget {
-  const SummaryScreen({super.key});
+  final Book book;
+  const SummaryScreen({
+    super.key,
+    required this.book,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final isSaved = ModalRoute.of(context)!.settings.arguments;
+
     return Scaffold(
       appBar: AppBar(
         actions: [
-          BlocBuilder<GenerativeAiBloc, GenerativeAiStates>(
-            builder: (context, state) {
-              return IconButton(
-                onPressed: () {
-                  if (state is LoadedGenerativeAiState) {
-                    showDialog(
-                      context: context,
-                      builder: (ctx) => BookInfoDialog(book: state.book),
-                    );
-                  }
-                },
-                icon: const Icon(Icons.info),
+          IconButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (ctx) => BookInfoDialog(book: book),
               );
             },
+            icon: const Icon(Icons.info),
           ),
         ],
       ),
-      body: BlocBuilder<GenerativeAiBloc, GenerativeAiStates>(
-        builder: (context, state) {
-          if (state is LoadedGenerativeAiState) {
-            return Column(
+      body: Column(
+        children: [
+          Expanded(
+            child: MarkdownWithFooter(
+              markdownData: book.summary,
+              footer: const Icon(Icons.star),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Expanded(
-                  child: MarkdownWithFooter(
-                    markdownData: state.book.summary,
-                    footer: const Icon(Icons.star),
-                  ),
+                FilledButton.icon(
+                  onPressed: () {},
+                  label: const Text("Audio"),
+                  icon: const Icon(Icons.play_arrow),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      FilledButton.icon(
-                        onPressed: () {},
-                        label: const Text("Audio"),
-                        icon: const Icon(Icons.play_arrow),
-                      ),
-                      BlocBuilder<BooksBloc, BooksState>(
-                        builder: (context, booksState) {
-                          if (booksState is LoadingBookState) {
-                            return const CircularProgressIndicator();
-                          }
+                if (isSaved == null)
+                  BlocBuilder<BooksBloc, BooksState>(
+                    builder: (context, booksState) {
+                      if (booksState is LoadingBookState) {
+                        return const CircularProgressIndicator();
+                      }
 
-                          return FilledButton.icon(
-                            onPressed: () {
-                              context
-                                  .read<BooksBloc>()
-                                  .add(AddBookEvent(state.book));
-                            },
-                            style: FilledButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              foregroundColor: Colors.white,
-                            ),
-                            label: const Text("Saqlash"),
-                            icon: const Icon(Icons.bookmark),
-                          );
+                      return FilledButton.icon(
+                        onPressed: () {
+                          context.read<BooksBloc>().add(AddBookEvent(book));
                         },
-                      )
-                    ],
-                  ),
-                )
+                        style: FilledButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
+                        ),
+                        label: const Text("Saqlash"),
+                        icon: const Icon(Icons.bookmark),
+                      );
+                    },
+                  )
               ],
-            );
-          }
-          return const Center(
-            child: Text("Natija mavjud emas"),
-          );
-        },
+            ),
+          )
+        ],
       ),
     );
   }

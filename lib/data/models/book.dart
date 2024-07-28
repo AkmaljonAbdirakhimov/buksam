@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Book {
@@ -11,6 +10,10 @@ class Book {
   double rate;
   DateTime publishedDate;
   List<String> facts;
+
+  String userId;
+  bool isFavorite;
+
   Book({
     required this.id,
     required this.title,
@@ -19,6 +22,8 @@ class Book {
     required this.rate,
     required this.publishedDate,
     required this.facts,
+    required this.userId,
+    this.isFavorite = false,
   });
 
   Map<String, dynamic> toMap() {
@@ -31,6 +36,8 @@ class Book {
     result.addAll({'rate': rate});
     result.addAll({'publishedDate': publishedDate.toString()});
     result.addAll({'facts': facts});
+    result.addAll({'userId': userId});
+    result.addAll({'isFavorite': isFavorite});
 
     return result;
   }
@@ -44,6 +51,8 @@ class Book {
       rate: map['rate']?.toDouble() ?? 0.0,
       publishedDate: DateTime.parse(map['publishedDate']),
       facts: List<String>.from(map['facts']),
+      userId: map['userId'],
+      isFavorite: map['isFavorite'] ?? false,
     );
   }
 
@@ -53,6 +62,6 @@ class Book {
 
   @override
   String toString() {
-    return 'Book(id: $id, title: $title, summary: $summary, author: $author, rate: $rate, publishedDate: $publishedDate, facts: $facts)';
+    return 'Book(id: $id, title: $title, summary: $summary, author: $author, rate: $rate, publishedDate: $publishedDate, facts: $facts, userId: $userId, isFavorite: $isFavorite)';
   }
 }

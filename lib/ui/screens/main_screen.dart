@@ -1,3 +1,4 @@
+import 'package:buksam_flutter_practicum/ui/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,6 +21,21 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (ctx) => const ProfileScreen(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.person),
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -32,7 +48,7 @@ class _MainScreenState extends State<MainScreen> {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (ctx) {
-                            return const SummaryScreen();
+                            return SummaryScreen(book: state.book);
                           },
                         ),
                       );
